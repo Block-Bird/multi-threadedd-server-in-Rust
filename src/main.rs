@@ -1,5 +1,6 @@
 // use std::arch::x86_64::_mm256_mask_cvtusepi64_storeu_epi8;
 use std::f32::consts::E;
+use std::fs::{*, self};
 use std::net::{TcpListener , TcpStream};
 use std::io::prelude::*;
 fn main() {
@@ -28,13 +29,19 @@ fn handle_connection(mut stream : TcpStream  )  {
     let mut buffer = [0; 1024]; 
     stream.read(&mut buffer).unwrap();
 
+    let contents = fs::read_to_string("index.html").unwrap(); 
+
     println!(
         "Request {}" , 
         String::from_utf8_lossy(&buffer[..])
     );
     
+    let response = format!(
+        "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}", 
+        contents.len(), 
+        contents
+    );
 
-    let response = "HTTP/1.1 200 OK r\n\r\n";
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
 }
