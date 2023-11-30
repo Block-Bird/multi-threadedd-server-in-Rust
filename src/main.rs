@@ -28,21 +28,38 @@ fn main() {
 fn handle_connection(mut stream : TcpStream  )  {
     let mut buffer = [0; 1024]; 
     stream.read(&mut buffer).unwrap();
-
-    let contents = fs::read_to_string("index.html").unwrap(); 
-
-    println!(
-        "Request {}" , 
-        String::from_utf8_lossy(&buffer[..])
-    );
     
-    let response = format!(
-        "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}", 
-        contents.len(), 
-        contents
-    );
+    let get = b"GET / HTTP/1.1\r\n"; 
 
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
+    if buffer.starts_with(get) {
+
+        println!("Printing If Condition");
+
+        let contents: String = fs::read_to_string("index.html").unwrap(); 
+        let response = format!(
+            "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}", 
+            contents.len(), 
+            contents
+        );
+    
+        stream.write(response.as_bytes()).unwrap();
+        stream.flush().unwrap();
+
+    }
+    else {
+
+        println!("Printing Else Condition");
+        let content = fs::read_to_string("404.html").unwrap(); 
+
+        let response = format!(
+            "HTTP/1.1 404 NOT FOUND\r\nContent-Length: {}\r\n\r\n{}", 
+            content.len(), 
+            content
+        );
+
+        stream.write(response.as_bytes()).unwrap(); 
+
+    }
+
 }
  
