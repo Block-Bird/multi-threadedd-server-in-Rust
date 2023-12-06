@@ -6,6 +6,9 @@ use std::thread::*;
 use std::thread;
 use std::time::Duration;
 
+// custom defiend Module
+use wevServer::ThreadPool;
+
 use std::net::{TcpListener, TcpStream};
  fn main() {
 
@@ -18,15 +21,9 @@ use std::net::{TcpListener, TcpStream};
         
         let incoming_stream = incoming_stream.unwrap(); 
 
-        // match incoming_stream {
-        //     Ok(incoming_stream) => {
-        //         println!("Connection Established");
-        //         handle_connection(incoming_stream);
-        //     }
-        //     Err(e) => {
-        //         println!("Erro is Connection Establishing {:?} ", e);
-        //     }
-        // }
+        pool.execute( || {
+            handle_connection(incoming_stream); 
+        })
         
     }
 }

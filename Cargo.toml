@@ -1,5 +1,5 @@
 [package]
-name = "multi-threadedd-server-in-Rust"
+name = "wevServer"
 version = "0.1.0"
 edition = "2021"
 
